@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
-import cookieParser from 'cookie-parser';
 import { AppModule } from '@/app.module';
 import { NestApplication } from '@nestjs/core';
 import * as httpsServer from '@/server/https.service';
 import { ClusterService } from '@/server/cluster.service';
+import { NestApplicationOptions } from '@nestjs/common';
 
 const bootstrap = async () => {
   ConfigModule.forRoot({
@@ -15,9 +15,15 @@ const bootstrap = async () => {
   const HOST = process.env.HOST || 'localhost';
   const protocol = process.env.PROTOCOL;
 
-  const app: NestApplication = await NestFactory.create(AppModule);
+  const options: NestApplicationOptions = {};
+  const app: NestApplication = await NestFactory.create<NestApplication>(
+    AppModule,
+    options,
+  );
 
-  app.use(cookieParser());
+  app.getHttpAdapter().getInstance().disable('x-powered-by');
+  app.enableCors();
+  app.useBodyParser('json', { limit: '10mb' });
 
   const server = await httpsServer.createHttpsServer(app);
 
