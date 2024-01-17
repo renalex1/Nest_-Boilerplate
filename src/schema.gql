@@ -1,0 +1,55 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  _id: ID!
+  email: String!
+  name: String!
+}
+
+type Query {
+  login: String!
+  verifyToken(input: TokenInput!): Boolean!
+  loginUser(input: LoginUserInput!): User
+  me: User
+  logout: User
+}
+
+input TokenInput {
+  " "
+  token: String!
+}
+
+input LoginUserInput {
+  """A user's name"""
+  name: String
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  registerUser(input: CreateUserInput!): User!
+  confirmUser(input: ConfirmUserInput!): User!
+}
+
+input CreateUserInput {
+  """A user's name"""
+  name: String!
+
+  """A user's  email"""
+  email: String!
+
+  """A user's password"""
+  password: String!
+}
+
+input ConfirmUserInput {
+  """A user's name"""
+  name: String
+  email: String!
+
+  """A user's password"""
+  password: String
+  confirmToken: String!
+}
