@@ -4,14 +4,12 @@ import { AppModule } from '@/app.module';
 import { NestApplication } from '@nestjs/core';
 import * as httpsServer from '@/server/https.service';
 import { ClusterService } from '@/server/cluster.service';
-import { Logger, NestApplicationOptions } from '@nestjs/common';
+import { NestApplicationOptions } from '@nestjs/common';
 
 const bootstrap = async (
   port?: number,
   maxAttempts: number = 10,
 ): Promise<void> => {
-  const logger = new Logger(bootstrap.name);
-
   ConfigModule.forRoot({
     envFilePath: `.env${process.env.NODE_ENV ? '.' + process.env.NODE_ENV : ''}`,
   });
@@ -46,6 +44,7 @@ const bootstrap = async (
       if (maxAttempts > 0) {
         console.log(`Trying the next port...`);
         await bootstrap(PORT + 1, maxAttempts - 1);
+        console.clear();
       } else {
         console.error(
           `Exceeded maximum attempts. Could not find an available port.`,
