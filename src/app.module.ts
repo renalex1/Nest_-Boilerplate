@@ -10,22 +10,24 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { AuthModule } from '@/auth/auth.module';
 import { JwtService } from '@/jwt/jwt.service';
+import configurations from '@/config';
+
+console.log(configurations().system.graphqlPlayground);
 
 @Module({
   imports: [
     AuthModule,
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: `.env${process.env.NODE_ENV ? '.' + process.env.NODE_ENV : ''}`,
+      load: [() => configurations()],
     }),
-    MongooseModule.forRoot(
-      process.env.MONGO_URI +
-        process.env.MONGO_USER +
-        process.env.MONGO_PASSWORD +
-        process.env.MONGO_DEFAULT_DATABASE +
-        process.env.MONGO_DATABASE_NAME,
-    ),
+    MongooseModule.forRoot(configurations().database.uri, {
+      connectionFactory: configurations().database.connectionFactory,
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      playground: true,
       // autoSchemaFile: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req, res }) => {

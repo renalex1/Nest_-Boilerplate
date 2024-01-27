@@ -30,13 +30,16 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^10.0.1",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/typeorm": "^10.0.1",
     "bcrypt": "^5.1.1",
     "class-validator": "^0.14.0",
     "devcert": "^1.2.2",
+    "dotenv": "^16.3.1",
     "graphql": "^16.8.1",
     "graphql-tools": "^9.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.0",
+    "mongoose-autopopulate": "^1.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^5.0.5",
     "rxjs": "^7.8.1",
@@ -87,3 +90,5 @@
     "testEnvironment": "node"
   }
 }
+
+
