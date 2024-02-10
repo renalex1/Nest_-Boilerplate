@@ -10,6 +10,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { AuthModule } from '@/auth/auth.module';
 import { JwtService } from '@/jwt/jwt.service';
+import { UtilsModule } from './utils/utils.module';
 import configurations from '@/config';
 
 console.log(configurations());
@@ -51,6 +52,7 @@ console.log(configurations());
       // installSubscriptionHandlers: true,
     }),
     UserModule,
+    UtilsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
