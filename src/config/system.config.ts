@@ -1,5 +1,8 @@
+import { config } from 'dotenv';
+config({
+  path: `.env${process.env.NODE_ENV ? '.' + process.env.NODE_ENV : ''}`,
+});
 import { ISystemConfiguration } from '@/config/interfaces/environment.configurations.interface';
-import * as process from 'process';
 
 const configurations: ISystemConfiguration = {
   port: parseInt(process.env.SERVER_PORT) || 3000,

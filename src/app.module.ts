@@ -12,7 +12,7 @@ import { AuthModule } from '@/auth/auth.module';
 import { JwtService } from '@/jwt/jwt.service';
 import configurations from '@/config';
 
-console.log(configurations().system.graphqlPlayground);
+console.log(configurations());
 
 @Module({
   imports: [

@@ -1,6 +1,9 @@
+import { config } from 'dotenv';
+config({
+  path: `.env${process.env.NODE_ENV ? '.' + process.env.NODE_ENV : ''}`,
+});
 import { MongooseModuleOptions } from '@nestjs/mongoose';
 import { Logger } from '@nestjs/common';
-import * as process from 'process';
 
 const logger = new Logger('MongoDB');
 /* eslint-disable */

@@ -3,6 +3,7 @@ import { MongooseModuleOptions } from '@nestjs/mongoose';
 export interface IEnvironmentConfiguration {
   system: ISystemConfiguration;
   frontend: IFrontendConfiguration;
+  backend: IBackendConfiguration;
   jwt: IJwtConfiguration;
   database: MongooseModuleOptions;
   queue: IQueueConfiguration;
@@ -20,6 +21,12 @@ export interface ISystemConfiguration {
 
 export interface IFrontendConfiguration {
   url: string;
+  urlExternal: string;
+}
+
+export interface IBackendConfiguration {
+  url: string;
+  urlExternal: string;
 }
 
 export interface IJwtConfiguration {
@@ -28,6 +35,9 @@ export interface IJwtConfiguration {
 }
 
 export interface IQueueConfiguration {
-  accessKey: string;
-  secretKey: string;
+  accessKeyID: string;
+  secretAccessKey: string;
+  endpoint: string;
+  region: string;
+  queueSuffix: string;
 }
