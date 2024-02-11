@@ -12,14 +12,9 @@ export class JwtService {
 
   verifyToken(token: string): Record<string, object> {
     try {
-      const tokenWithoutBearer = token.startsWith('Bearer ')
-        ? token.slice(7)
-        : token;
+      const tokenWithoutBearer = token.startsWith('Bearer ') ? token.slice(7) : token;
 
-      return verify(tokenWithoutBearer, this.secretKey) as Record<
-        string,
-        object
-      >;
+      return verify(tokenWithoutBearer, this.secretKey) as Record<string, object>;
     } catch (error) {
       throw new Error('Invalid token');
     }

@@ -8,7 +8,6 @@ import { Logger } from '@nestjs/common';
 const logger = new Logger('MongoDB');
 /* eslint-disable */
 
-
 const MongooseConfig = (): MongooseModuleOptions => {
   return {
     uri: `${process.env.MONGO_URL}${process.env.MONGO_USER}${process.env.MONGO_PASSWORD}${process.env.MONGO_DEFAULT_DATABASE}${process.env.MONGO_DATABASE_NAME}`,

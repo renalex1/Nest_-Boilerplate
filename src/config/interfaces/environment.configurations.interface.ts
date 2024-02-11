@@ -16,6 +16,7 @@ export interface ISystemConfiguration {
   disableCors: boolean;
   protocol: string;
   clusterMode: boolean;
+  graphql: boolean;
   graphqlPlayground: boolean;
 }
 

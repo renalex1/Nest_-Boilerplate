@@ -14,15 +14,20 @@ export class UtilsService {
 
   private async checkPathExistence(path: string): Promise<boolean> {
     if (!path) return;
+
     try {
       await fsPromises.stat(path);
+      return true;
     } catch (err) {
       return false;
     }
   }
 
-  createPath(path: string | string[], mode: boolean = true): string {
-    if (!path) return;
+  createPath(path: string | string[], mode: boolean = false): string {
+    if (!path) {
+      this.loggerService.error(`[CreatePath]: Error missing path!`);
+      return;
+    }
     const root = mode ? '' : this.rootPath;
 
     if (Array.isArray(path)) {
@@ -36,15 +41,15 @@ export class UtilsService {
     if (!path) return;
     try {
       if (Array.isArray(path)) {
-        await Promise.all(
+        const results = await Promise.all(
           path.map(async (element) => {
             await this.checkPathExistence(element);
           }),
         );
+        return results.every((result) => result);
       } else {
-        await this.checkPathExistence(path);
+        return await this.checkPathExistence(path);
       }
-      return true;
     } catch (err) {
       return false;
     }
@@ -57,9 +62,10 @@ export class UtilsService {
       if (!(await this.isExistPathAsync(path))) {
         await fsPromises.mkdir(path);
       }
+      this.loggerService.log(`[CreateDirAsync]: Folder create successful: ${path}`);
       return true;
     } catch (err) {
-      this.loggerService.error(`Error create folder:`, JSON.stringify(err));
+      this.loggerService.error(`[CreateDirAsync]: Error create folder: ${JSON.stringify(err)}`);
       return false;
     }
   }
@@ -70,23 +76,44 @@ export class UtilsService {
     try {
       if (await this.isExistPathAsync(path)) {
         await fsPromises.rm(path, { recursive: true, force: true });
+        this.loggerService.log(`[DeletePathAsync]: Folder delete successful: ${path}`);
         return true;
       }
       return false;
     } catch (err) {
-      this.loggerService.error(`Error delete file:`, JSON.stringify(err));
+      this.loggerService.error(`[DeletePathAsync]: Error delete file: ${JSON.stringify(err)}`);
       return false;
     }
   }
 
-  async writeFileAsync(path: string, data: string): Promise<boolean> {
+  async writeFileAsync(path: string, data: string, parameters?: any): Promise<boolean> {
     if (!path || !data) return false;
 
     try {
-      await fsPromises.writeFile(path, data, 'utf-8');
+      const info = parameters ? JSON.stringify(data, ...parameters) : data;
+
+      await fsPromises.writeFile(path, info, 'utf-8');
+
+      this.loggerService.log(`[WriteFileAsync]: Write file successful: ${path}`);
+
       return true;
     } catch (err) {
-      this.loggerService.error(`Error writing to ${path} file:`, JSON.stringify(err));
+      this.loggerService.error(`[WriteFileAsync]: Error writing to ${path} file: ${JSON.stringify(err)}`);
+      return false;
+    }
+  }
+
+  async readFileAsync(path: string): Promise<any> {
+    if (!path) return false;
+
+    try {
+      if (await this.isExistPathAsync(path)) {
+        return await fsPromises.readFile(path, 'utf-8');
+      } else {
+        this.loggerService.error(`[WriteFileAsync]: File ${path} don't exist`);
+      }
+    } catch (err) {
+      this.loggerService.error(`[WriteFileAsync]: Error reading file ${path} : ${JSON.stringify(err)}`);
       return false;
     }
   }
@@ -105,11 +132,14 @@ export class UtilsService {
 
         if (itemStat.isFile()) {
           await fsPromises.rename(sourcePath, targetPath);
-          this.loggerService.log(`Moved ${sourcePath} to ${targetPath}`);
+
+          this.loggerService.log(`[ReadAndMoveFiles]: Successful move files from ${sourceFolder} to ${targetFolder}: `);
         }
       }
     } catch (err) {
-      this.loggerService.error(err);
+      this.loggerService.error(
+        `[ReadAndMoveFiles]: Error move files from ${sourceFolder} to ${targetFolder}: ${JSON.stringify(err)}`,
+      );
       throw err;
     }
   }
@@ -128,15 +158,15 @@ export class UtilsService {
 
         zip.writeZip(outputPath, (err: any) => {
           if (err) {
-            this.loggerService.error(err);
             reject(err);
           } else {
+            this.loggerService.error(`[zipDirectory]: Successful zip folder ${directory}: ${JSON.stringify(err)}`);
             resolve(zipFileName);
           }
         });
       });
     } catch (err) {
-      this.loggerService.error(err);
+      this.loggerService.error(`[zipDirectory]: Error zip folder ${directory}: ${JSON.stringify(err)}`);
       throw err;
     }
   }
